@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Track or Trash</h1>
+        <p>Clean your playlists up by swiping</p>
+    </header>
+    <!-- Input fields -->
+    <main id="setup">
+        <div class="card">
+            <h2>Connect your Spotify API</h2>
+            <div class="input-group">
+                <label>Client ID</label>
+                <input type="text" id="client-id" placeholder="Paste your Spotify Client ID">
+            </div>
+            <div class="input-group">
+                <label>Client Secret</label>
+                <input type="password" id="client-secret" placeholder="Paste your Spotify Client Secret">
+            </div>
+            <button onclick="SaveKeys()">Save</button>
+        </div>
+
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>
