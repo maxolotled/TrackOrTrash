@@ -1,6 +1,7 @@
+const storedID = localStorage.getItem("clientID");
+const storedSecret = localStorage.getItem("clientSecret");
+
 window.onload = function() { // if api keys already exist in local storage, skip login screen
-    const storedID = localStorage.getItem("clientID");
-    const storedSecret = localStorage.getItem("clientSecret");
     
     if (storedID && storedSecret) {
         viewDashboard();
@@ -27,4 +28,16 @@ function viewDashboard() {
     const dashboardScreen = document.getElementById("dashboard");
     loginScreen.classList.add("hidden");
     dashboardScreen.classList.remove("hidden");
+}
+
+async function fetchToken() {
+    const response = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'grant_type=client_credentials&client_id=' + storedID + '&client_secret='+ storedSecret
+    });
+    const data = await response.json();
+    console.log(data);
 }
