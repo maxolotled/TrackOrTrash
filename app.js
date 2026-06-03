@@ -71,7 +71,7 @@ async function fetchToken(code) { // get spotify authorization token
             console.log("Access token: " + authToken);
             viewDashboard();
             window.history.pushState({}, document.title, window.location.pathname);
-            getLikedSongs();
+            getPlaylists();
         } else {
             console.error("Response obtained, but no access token found:", data);
         }
@@ -81,28 +81,38 @@ async function fetchToken(code) { // get spotify authorization token
     }
 }
 
-async function getLikedSongs() {
+async function getPlaylists() {
      // get liked songs info from spotify
-     const response = await fetch ('https://api.spotify.com/v1/me/tracks', {
+     const responseLiked = await fetch ('https://api.spotify.com/v1/me/tracks', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + authToken
         }
      });
 
-     const likedSongs = await response.json();
+     const likedSongs = await responseLiked.json();
      console.log(likedSongs);
-}
-
-async function GetPlaylists() {
-    // get user playlists
-    const response = await fetch ('https://api.spotify.com/v1/me/playlists', {
+         // get user playlists
+    const responsePlaylists = await fetch ('https://api.spotify.com/v1/me/playlists', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + authToken
         }
     });
 
-    const playlists = await response.json();
+    const playlists = await responsePlaylists.json();
     console.log(playlists); 
+    if (playlists.items.length > 0 || likedSongs.items.length > 0) {
+        viewHome();
+    } else {
+        alert("No playlists or liked songs found in your account! Please add some and try again :)");
+    }
+
+function viewHome() { // hide dashboard and login, unhide homescreen
+    const loginScreen = document.getElementById("setup");
+    const home = document.getElementById("home");
+    const dashboardScreen = document.getElementById("dashboard");
+    dashboardScreen.classList.add("hidden");
+    home.classList.remove("hidden");
+}
 }
