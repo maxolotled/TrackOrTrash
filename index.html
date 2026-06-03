@@ -17,20 +17,22 @@
             <h2>Connect your Spotify API</h2>
             <div class="input-group">
                 <label>Client ID</label>
-                <input type="text" id="client-id" placeholder="Paste your Spotify Client ID">
+                <input type="text" id="client-id" placeholder="Paste your Client ID">
             </div>
             <div class="input-group">
                 <label>Client Secret</label>
-                <input type="password" id="client-secret" placeholder="Paste your Spotify Client Secret">
+                <input type="password" id="client-secret" placeholder="Paste your Client Secret">
             </div>
-            <button onclick="SaveKeys()">Save</button>
+            <button onclick="SaveKeys()">Save API credentials</button>
         </div>
 
     </main>
     <section id ="dashboard" class="hidden">
         <div class="card">
             <h2>Connected to Spotify API succesfully!</h2>
-            <p>Your saved API credentials have been loaded.</p>
+            <p>Your saved API credentials have been loaded.
+                Press 'sign in' below to login to your account and start sorting playlists!
+            </p>
             
             <button onclick="login()" id="fetch">Sign in</button>
         </div>
