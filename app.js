@@ -90,6 +90,19 @@ async function getLikedSongs() {
         }
      });
 
-     const playlists = await response.json();
-     console.log(playlists);
+     const likedSongs = await response.json();
+     console.log(likedSongs);
+}
+
+async function GetPlaylists() {
+    // get user playlists
+    const response = await fetch ('https://api.spotify.com/v1/me/playlists', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + authToken
+        }
+    });
+
+    const playlists = await response.json();
+    console.log(playlists); 
 }
