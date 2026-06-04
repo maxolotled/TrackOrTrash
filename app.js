@@ -71,6 +71,7 @@ async function fetchToken(code) { // get spotify authorization token
             console.log("Access token: " + authToken);
             viewDashboard();
             window.history.pushState({}, document.title, window.location.pathname);
+            viewHome();
             getPlaylists();
         } else {
             console.error("Response obtained, but no access token found:", data);
@@ -80,39 +81,77 @@ async function fetchToken(code) { // get spotify authorization token
         console.error('Error fetching token:', error);
     }
 }
-
 async function getPlaylists() {
-     // get liked songs info from spotify
-     const responseLiked = await fetch ('https://api.spotify.com/v1/me/tracks', {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + authToken
-        }
-     });
+    const menuContainer = document.getElementById("menu-container");
+    menuContainer.innerHTML = "";
 
-     const likedSongs = await responseLiked.json();
-     console.log(likedSongs);
-         // get user playlists
-    const responsePlaylists = await fetch ('https://api.spotify.com/v1/me/playlists', {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + authToken
+    const likedCard = `
+        <div class="menu-card liked-songs-card" onclick="startSorting('likes', 'me')">
+            <div class="card-art-placeholder">💖</div>
+            <div class="card-info">
+                <h3>Liked Songs</h3>
+                <p>All your favorites</p>
+            </div>
+        </div>
+    `;
+    menuContainer.innerHTML += likedCard;
+    try {
+        const response = await fetch('https://api.spotify.com/v1/me/playlists', {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + authToken }
+        });
+        const playlistData = await response.json();
+        if (playlistData.items) {
+            playlistData.items.forEach(playlist => {
+                const name = playlist.name;
+                const id = playlist.id;
+                const amtSongs = playlist.tracks.total;
+                const cover = playlist.images && playlist.images[0] ? playlist.images[0].url : 'https://placehold.co/150?text=No+Cover';
+                const playlistCard = `
+                <div class="menu-card" onclick="startSorting('playlist', '${id}')">
+                    <img src="${cover}" alt="${name} cover" class="card-art">
+                    <div class="card-info">
+                        <h3>${name}</h3>
+                        <p>${amtSongs} songs</p>
+                    </div>
+                </div>
+                `;
+                menuContainer.innerHTML += playlistCard;
+            });
         }
-    });
-
-    const playlists = await responsePlaylists.json();
-    console.log(playlists); 
-    if (playlists.items.length > 0 || likedSongs.items.length > 0) {
-        viewHome();
-    } else {
-        alert("No playlists or liked songs found in your account! Please add some and try again :)");
+    } catch (error) {
+        console.error("Error fetching playlists:", error);
     }
+}
+// async function getPlaylists() {
+//      // get liked songs info from spotify
+//      const responseLiked = await fetch ('https://api.spotify.com/v1/me/tracks', {
+//         method: 'GET',
+//         headers: {
+//             'Authorization': 'Bearer ' + authToken
+//         }
+//      });
+
+//      const likedSongs = await responseLiked.json();
+//      console.log(likedSongs);
+//          // get user playlists
+//     const responsePlaylists = await fetch ('https://api.spotify.com/v1/me/playlists', {
+//         method: 'GET',
+//         headers: {
+//             'Authorization': 'Bearer ' + authToken
+//         }
+//     });
+
+//     const playlists = await responsePlaylists.json();
+//     console.log(playlists); 
+//     if (playlists.items.length > 0 || likedSongs.items.length > 0) {
+//         viewHome();
+//     } else {
+//         alert("No playlists or liked songs found in your account! Please add some and try again :)");
+//     }
 
 function viewHome() { // hide dashboard and login, unhide homescreen
-    const loginScreen = document.getElementById("setup");
-    const home = document.getElementById("home");
-    const dashboardScreen = document.getElementById("dashboard");
-    dashboardScreen.classList.add("hidden");
-    home.classList.remove("hidden");
-}
+    document.getElementById("setup").classList.add("hidden");
+    document.getElementById("dashboard").classList.add("hidden");
+    document.getElementById("home").classList.remove("hidden");
 }
