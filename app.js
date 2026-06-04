@@ -2,18 +2,24 @@ let authToken = "";
 const redirectUri = "http://127.0.0.1:5500/trackortrash/index.html";
 
 window.onload = function() { 
-    const storedID = localStorage.getItem("clientID");
-    const storedSecret = localStorage.getItem("clientSecret");
-    if (storedID && storedSecret) { // if keys already stored, skip login
-        viewDashboard();
-    }
-
+    // 1. Check ALTIJD eerst of we net terugkomen van Spotify met een code!
     const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code'); // see if just returning from spotify login with code
+    const code = urlParams.get('code'); 
 
     if (code) {
-        console.log("Authorization code: " + code);
+        // We hebben een code! Direct omruilen en NIET opnieuw inloggen.
+        console.log("Authorization code gevonden: " + code);
         fetchToken(code);
+    } 
+    else {
+        // We hebben GEEN code in de URL. Nu pas kijken we of we automatisch kunnen inloggen.
+        const storedID = localStorage.getItem("clientID");
+        const storedSecret = localStorage.getItem("clientSecret");
+        
+        if (storedID && storedSecret) { 
+            console.log("Sleutels gevonden! Automatisch doorsturen naar Spotify...");
+            login();
+        }
     }
 }
 
@@ -28,8 +34,7 @@ function SaveKeys() {
     // Save the keys to LocalStorage, so they are securely stored on the user's device and not exposed to the server or external databases :)
     localStorage.setItem("clientID", ID);
     localStorage.setItem("clientSecret", Secret);
-    alert("Your keys have been saved :)");
-    viewDashboard();
+    login();
 }
 
 function viewDashboard() { // unhide dashboard, hide login
@@ -38,13 +43,20 @@ function viewDashboard() { // unhide dashboard, hide login
     loginScreen.classList.add("hidden");
     dashboardScreen.classList.remove("hidden");
     document.getElementById("home").classList.add("hidden");
+    setTimeout((login), 3000);
 }
-function login() { // login to spotify using auth flow
-    const storedID = localStorage.getItem("clientID");
-    const storedSecret = localStorage.getItem("clientSecret");
+
+function login() { 
+    const liveID = localStorage.getItem("clientID"); 
     const authEndpoint = "https://accounts.spotify.com/authorize";
     const scopes = "playlist-read-private playlist-modify-private playlist-modify-public user-library-read user-library-modify";
-    const loginUrl = `${authEndpoint}?client_id=${storedID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=code`;
+    
+    if (!liveID) {
+        alert("No client ID found!");
+        return;
+    }
+
+    const loginUrl = `${authEndpoint}?client_id=${liveID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=code`;
     window.location = loginUrl;
 }
 

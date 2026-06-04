@@ -20,6 +20,22 @@ h1 {
     margin-bottom: 5px;
 }
 
+h2 {
+    color: white;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+h3 {
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
 .card{
     background-color: #363636;
     color: #ffffff;
@@ -64,6 +80,7 @@ button {
     font-weight: bold;
     width: 100%;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 button.hover {

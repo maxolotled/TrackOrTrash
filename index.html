@@ -9,7 +9,6 @@
 <body>
     <header>
         <h1>Track or Trash</h1>
-        <p>Clean your playlists up by swiping</p>
     </header>
     <!-- Input fields -->
     <main id="setup">
@@ -24,6 +23,7 @@
                 <input type="password" id="client-secret" placeholder="Paste your Client Secret">
             </div>
             <button onclick="SaveKeys()">Save API credentials</button>
+            <button onclick="openTutorial()">How to get API credentials?</button>
         </div>
 
     </main>
@@ -31,17 +31,15 @@
         <div class="card">
             <h2>Connected to Spotify API succesfully!</h2>
             <p>Your saved API credentials have been loaded.
-                Press 'sign in' below to login to your account and start sorting playlists!
+                You will be redirected to the Spotify login screen within a few seconds.
+                After logging in, you can start sorting your playlists!
             </p>
-            
-            <button onclick="login()" id="fetch">Sign in</button>
         </div>
     </section>
     <section id ="home" class="hidden">
-        <div class="card">
-            <h2>Signed in!</h2>
-            <p>Select a playlist below to start sorting!</p>
-        </div>
+        <header>
+            <h3>Select a playlist to start</h3>
+        </header>
         <div id="menu-container" class="menu-grid">
 
         </div>
