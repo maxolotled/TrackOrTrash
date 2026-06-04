@@ -37,15 +37,6 @@ function SaveKeys() {
     login();
 }
 
-function viewDashboard() { // unhide dashboard, hide login
-    const loginScreen = document.getElementById("setup");
-    const dashboardScreen = document.getElementById("dashboard");
-    loginScreen.classList.add("hidden");
-    dashboardScreen.classList.remove("hidden");
-    document.getElementById("home").classList.add("hidden");
-    setTimeout((login), 3000);
-}
-
 function login() { 
     const liveID = localStorage.getItem("clientID"); 
     const authEndpoint = "https://accounts.spotify.com/authorize";
@@ -141,6 +132,5 @@ async function getPlaylists() {
 
 function viewHome() { // hide dashboard and login, unhide homescreen
     document.getElementById("setup").classList.add("hidden");
-    document.getElementById("dashboard").classList.add("hidden");
     document.getElementById("home").classList.remove("hidden");
 }
