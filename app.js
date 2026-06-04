@@ -37,6 +37,7 @@ function viewDashboard() { // unhide dashboard, hide login
     const dashboardScreen = document.getElementById("dashboard");
     loginScreen.classList.add("hidden");
     dashboardScreen.classList.remove("hidden");
+    document.getElementById("home").classList.add("hidden");
 }
 function login() { // login to spotify using auth flow
     const storedID = localStorage.getItem("clientID");
@@ -69,9 +70,7 @@ async function fetchToken(code) { // get spotify authorization token
         if (data.access_token) {
             authToken = data.access_token;
             console.log("Access token: " + authToken);
-            viewDashboard();
             window.history.pushState({}, document.title, window.location.pathname);
-            viewHome();
             getPlaylists();
         } else {
             console.error("Response obtained, but no access token found:", data);
@@ -105,50 +104,28 @@ async function getPlaylists() {
             playlistData.items.forEach(playlist => {
                 const name = playlist.name;
                 const id = playlist.id;
-                const amtSongs = playlist.tracks.total;
+                let amtSongs = 0; // We beginnen op 0
+                if (playlist.tracks && playlist.tracks.total !== undefined) {
+                amtSongs = playlist.tracks.total; // Als het bestaat, overschrijven we de 0
+                }
+                console.log(`${name} - ${amtSongs} songs`);
                 const cover = playlist.images && playlist.images[0] ? playlist.images[0].url : 'https://placehold.co/150?text=No+Cover';
                 const playlistCard = `
                 <div class="menu-card" onclick="startSorting('playlist', '${id}')">
                     <img src="${cover}" alt="${name} cover" class="card-art">
                     <div class="card-info">
                         <h3>${name}</h3>
-                        <p>${amtSongs} songs</p>
                     </div>
                 </div>
                 `;
                 menuContainer.innerHTML += playlistCard;
             });
+            viewHome();
         }
     } catch (error) {
         console.error("Error fetching playlists:", error);
     }
 }
-// async function getPlaylists() {
-//      // get liked songs info from spotify
-//      const responseLiked = await fetch ('https://api.spotify.com/v1/me/tracks', {
-//         method: 'GET',
-//         headers: {
-//             'Authorization': 'Bearer ' + authToken
-//         }
-//      });
-
-//      const likedSongs = await responseLiked.json();
-//      console.log(likedSongs);
-//          // get user playlists
-//     const responsePlaylists = await fetch ('https://api.spotify.com/v1/me/playlists', {
-//         method: 'GET',
-//         headers: {
-//             'Authorization': 'Bearer ' + authToken
-//         }
-//     });
-
-//     const playlists = await responsePlaylists.json();
-//     console.log(playlists); 
-//     if (playlists.items.length > 0 || likedSongs.items.length > 0) {
-//         viewHome();
-//     } else {
-//         alert("No playlists or liked songs found in your account! Please add some and try again :)");
-//     }
 
 function viewHome() { // hide dashboard and login, unhide homescreen
     document.getElementById("setup").classList.add("hidden");
