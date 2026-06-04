@@ -146,3 +146,20 @@ button.hover {
     color: white;
     font-size: 0.9rem;
 }
+
+#logout {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: auto;
+    padding: 8px 16px;
+    background-color: #333333;
+    font-size: 0.85rem;
+    border: 1px solid #555555;
+    z-index: 1000;
+}
+
+#logout:hover {
+    background-color: #cc0000;
+    border: 1px solid #FFFFFF;
+}

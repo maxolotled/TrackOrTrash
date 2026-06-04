@@ -133,4 +133,13 @@ async function getPlaylists() {
 function viewHome() { // hide dashboard and login, unhide homescreen
     document.getElementById("setup").classList.add("hidden");
     document.getElementById("home").classList.remove("hidden");
+    document.getElementById("logout").classList.remove("hidden");
+}
+
+function logout() {
+    if(confirm('Remove all API keys and log out?')) {
+        localStorage.removeItem("clientID");
+        localStorage.removeItem("clientSecret");
+        window.location.href = window.location.pathname;
+    }
 }
