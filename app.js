@@ -1,5 +1,7 @@
 let authToken = "";
 const redirectUri = "http://127.0.0.1:5500/trackortrash/index.html";
+let currentTracksList = [];
+let currentTracksIndex = 0;
 
 window.onload = function() { 
     // 1. Check ALTIJD eerst of we net terugkomen van Spotify met een code!
@@ -130,7 +132,7 @@ async function getPlaylists() {
     }
 }
 
-function viewHome() { // hide dashboard and login, unhide homescreen
+function viewHome() { 
     document.getElementById("setup").classList.add("hidden");
     document.getElementById("home").classList.remove("hidden");
     document.getElementById("logout").classList.remove("hidden");
@@ -142,4 +144,35 @@ function logout() {
         localStorage.removeItem("clientSecret");
         window.location.href = window.location.pathname;
     }
+}
+
+function startSorting(type, id) {
+    viewDashboard();
+    if (type === 'likes') {
+        getLikedTracks();
+    } else {
+        getPlaylistTracks(id);
+    }
+}
+
+function getLikedTracks() {
+    alert("Starting liked tracks")
+}
+
+function getPlaylistTracks(id) {
+    alert("Start getting playlist with id " + id)
+}
+
+function viewDashboard() {
+    document.getElementById("setup").classList.add("hidden")
+    document.getElementById("home").classList.add("hidden")
+    document.getElementById("dashboard").classList.remove("hidden")
+}
+
+function Trash() {
+    alert("Song trashed")
+}
+
+function Track() {
+    alert ("Song Tracked")
 }
