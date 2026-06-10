@@ -1,5 +1,5 @@
 let authToken = "";
-const redirectUri = "http://127.0.0.1:5500/trackortrash/index.html";
+const redirectUri = "http://127.0.0.1:5500/index.html";
 let currentTracksList = [];
 let currentTracksIndex = 0;
 let currentTracksType = "";
@@ -266,6 +266,7 @@ async function getLikedTracks() { // pull all liked songs from spotify
     }
     if (allTracks && allTracks.length > 0) {
         currentTracksList = allTracks
+        currentTracksIndex = 0
         displayCurrentTrack();
     } else {
         alert("No liked songs found")
@@ -275,24 +276,28 @@ async function getLikedTracks() { // pull all liked songs from spotify
 
 async function getPlaylistTracks(id) {
     console.log("Start getting playlist with id " + id)
-    try {
-        const response = await fetch(`https://api.spotify.com/v1/playlists/${currentPlaylistId}/items`, {
-            method: 'GET',
-            headers: {'Authorization': 'Bearer ' + authToken}
-        });
-        const data = await response.json();
-        console.log(data)
-        if (data.items && data.items.length > 0) {
-            currentTracksList = data.items;
-            currentTracksIndex = 0;
-            console.log("succesfully loaded playlist with id" + currentPlaylistId)
-            displayCurrentTrack();
-        } else {
-            alert("Playlist is empty!")
-            viewHome();
+    let url = `https://api.spotify.com/v1/playlists/${currentPlaylistId}/items`
+    let allTracks = []
+    while (url) {
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {'Authorization': 'Bearer ' + authToken}
+            });
+            const data = await response.json();
+            allTracks = allTracks.concat(data.items);
+            url = data.next
+        } catch (error) {
+            console.log(error)
         }
-    } catch (error) {
-        console.log(error)
+    }
+    if (allTracks && allTracks.length > 0) {
+        currentTracksList = allTracks;
+        currentTracksIndex = 0;
+        displayCurrentTrack();
+    } else {
+        alert("Playlist is empty!")
+        viewHome();
     }
 }
 
