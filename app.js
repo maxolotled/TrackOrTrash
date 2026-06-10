@@ -265,7 +265,7 @@ async function getLikedTracks() { // pull all liked songs from spotify
         }
     }
     if (allTracks && allTracks.length > 0) {
-        currentTracksList = allTracks
+        currentTracksList = shuffle(allTracks);
         currentTracksIndex = 0
         displayCurrentTrack();
     } else {
@@ -273,7 +273,13 @@ async function getLikedTracks() { // pull all liked songs from spotify
         viewHome();
     }
 }
-
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 async function getPlaylistTracks(id) {
     console.log("Start getting playlist with id " + id)
     let url = `https://api.spotify.com/v1/playlists/${currentPlaylistId}/items`
@@ -292,7 +298,7 @@ async function getPlaylistTracks(id) {
         }
     }
     if (allTracks && allTracks.length > 0) {
-        currentTracksList = allTracks;
+        currentTracksList = shuffle(allTracks);
         currentTracksIndex = 0;
         displayCurrentTrack();
     } else {
