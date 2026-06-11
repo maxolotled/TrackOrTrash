@@ -171,3 +171,39 @@ button.hover {
     object-fit: cover;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
+
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 12px 24px;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    z-index: 1000;
+    animation: slideIn 0.5s ease;
+}
+
+.toast.success {
+    background-color: rgb(126, 210, 169)
+}
+
+.toast.error {
+    background-color: rgb(179, 104, 104)
+}
+
+.toast.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

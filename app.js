@@ -16,6 +16,7 @@ window.onload = function() {  // check on window load if already signed in
     if (code) { // if returning from spotify sign in
         console.log("Authorization code gevonden: " + code);
         fetchToken(code);
+        showToast("Signed in!")
     } 
     else {
         const storedID = localStorage.getItem("clientID");
@@ -32,7 +33,7 @@ function SaveKeys() { // save the api keys to localstorage
     const Secret = document.getElementById("client-secret").value;
 
     if (ID === "" || Secret === "") { // Check if both fields actually have anything inside
-        alert("Hey, fill in both fields!");
+        showToast("Please enter API credentials before signing in.", true)
         return;
     }
     // Save the keys to LocalStorage, so they are securely stored on the user's device and not exposed to the server or external databases :)
@@ -47,7 +48,7 @@ function login() {  // send the other to spotify's login page
     const scopes = "playlist-read-private playlist-modify-private playlist-modify-public user-library-read user-library-modify playlist-modify-public streaming user-read-playback-state user-modify-playback-state";
     
     if (!liveID) {
-        alert("No client ID found!");
+        showToast("No user ID found!", true)
         return;
     }
 
@@ -81,13 +82,28 @@ async function fetchToken(code) { // get spotify authorization token
             getUserID();
             getPlaylists();
         } else {
-            console.error("Response obtained, but no access token found:", data);
+            showToast("Response obtained, but no access token found:" + data, true);
         }
     }
     catch(error) {
-        console.error('Error fetching token:', error);
+        showToast('Error fetching token:' + error, true);
     }
 }
+
+function showToast(message, isError) {
+    if (isError === true) {
+        document.getElementById("toast").classList.add("error");
+    } else {
+        document.getElementById("toast").classList.add("success");
+    }
+    document.getElementById("toast").innerText = message;
+    document.getElementById("toast").classList.remove("hidden");
+    setTimeout(() => {
+        document.getElementById("toast").classList.add("hidden")
+        document.getElementById("toast").classList.remove("error", "succes")
+    }, 3000)
+}
+
 async function getPlaylists() { // pull the user's playlists from the spotify API
     const menuContainer = document.getElementById("menu-container");
     menuContainer.innerHTML = "";
@@ -129,7 +145,7 @@ async function getPlaylists() { // pull the user's playlists from the spotify AP
             viewHome();
         }
     } catch (error) {
-        console.error("Error fetching playlists:", error);
+        showToast("Error fetching playlists:" + error, true);
     }
 }
 
@@ -145,6 +161,7 @@ function logout() { // delete api keys, sign out
         localStorage.removeItem("clientID");
         localStorage.removeItem("clientSecret");
         window.location.href = window.location.pathname;
+        showToast("Logged out")
     }
 }
 
@@ -171,7 +188,7 @@ window.onSpotifyWebPlaybackSDKReady = function() {
     });
 
     player.addListener('initialization_error', ({message}) => {
-    console.log("player error" + message)
+    showToast("Player error:" + message, true)
     });
     player.connect(); 
 }
@@ -195,7 +212,7 @@ async function playPreview(uri) {
         console.log("Track playing:", uri);
     } else {
         const err = await response.json();
-        console.error("error when playing:", err);
+        showToast(`Error when playing: ${err.error?.message}`, true);
     }
 }
 
@@ -244,11 +261,12 @@ async function getUserID() {
         userID = data.id;
         console.log('User ID:' + userID)
     } catch (error) {
-        console.log(error);
+        showToast(error, true);
     }
 }
 
 async function getLikedTracks() { // pull all liked songs from spotify
+    showToast("Getting your liked tracks..")
     let url = "https://api.spotify.com/v1/me/tracks"
     let allTracks = []
     while (url) {
@@ -261,7 +279,7 @@ async function getLikedTracks() { // pull all liked songs from spotify
             allTracks = allTracks.concat(data.items);
             url = data.next
         } catch (error) {
-            console.error(error)
+            showToast(error, true)
         }
     }
     if (allTracks && allTracks.length > 0) {
@@ -269,7 +287,7 @@ async function getLikedTracks() { // pull all liked songs from spotify
         currentTracksIndex = 0
         displayCurrentTrack();
     } else {
-        alert("No liked songs found")
+        showToast("No liked songs found.", true)
         viewHome();
     }
 }
@@ -281,6 +299,7 @@ function shuffle(array) {
     return array;
 }
 async function getPlaylistTracks(id) {
+    showToast("Getting your playlist tracks..")
     console.log("Start getting playlist with id " + id)
     let url = `https://api.spotify.com/v1/playlists/${currentPlaylistId}/items`
     let allTracks = []
@@ -294,7 +313,7 @@ async function getPlaylistTracks(id) {
             allTracks = allTracks.concat(data.items);
             url = data.next
         } catch (error) {
-            console.log(error)
+            showToast(error, true)
         }
     }
     if (allTracks && allTracks.length > 0) {
@@ -302,7 +321,7 @@ async function getPlaylistTracks(id) {
         currentTracksIndex = 0;
         displayCurrentTrack();
     } else {
-        alert("Playlist is empty!")
+        showToast("Playlist is empty!", true)
         viewHome();
     }
 }
@@ -330,14 +349,15 @@ async function Trash() { // delete the song
 
             if (response.status === 200) {
                 console.log("Track deleted:", uri);
+                showToast("Song trashed!")
                 nextTrack();
             } else {
                 const err = await response.json();
-                console.error("Error:", err);
-                alert(`Error: ${err.error?.message || response.status}`);
+                showToast("Error:" + err.error?.message, true);
+                showToast(`An error occured while getting song details: ${err.error?.message || response.status}`, true)
             }
         } catch (error) {
-            console.error("Network error:", error);
+            showToast("Network error:" + error, true);
         }
     } else {
         const currentItem = currentTracksList[currentTracksIndex];
@@ -353,20 +373,22 @@ async function Trash() { // delete the song
                 body: JSON.stringify({ items: [{ uri: uri }] })
             });
             if (response.status === 200) {
+                showToast("Song trashed!")
                 console.log("Track deleted:", uri)
                 nextTrack()
             } else {
                 const error = await response.json();
-                console.error("Error when deleting. JSON:", error);
-                alert(`Error while trashing song.`)
+                showToast("Error when deleting:" + error, true);
+                showToast(`Error when deleting song: ${error.error?.message || response.status}`)
             }
         } catch (error) {
-            console.error("network error:", error)
+            showToast("Network error:" + error, true)
         }
     }
 }
 
 function Track() { // keep the song
+    showToast("Song kept!")
     console.log("Song Tracked");
     nextTrack();
 }
@@ -374,7 +396,7 @@ function Track() { // keep the song
 function nextTrack() {
     currentTracksIndex = currentTracksIndex + 1
     if (currentTracksIndex >= currentTracksList.length) {
-        alert("Yay, you've sorted through all songs already! :)")
+        showToast("You've sorted through all songs!")
         viewHome();
     } else {
         displayCurrentTrack();
