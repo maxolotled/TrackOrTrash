@@ -217,39 +217,19 @@ async function playPreview(uri) {
 }
 
 function displayCurrentTrack() {
-    if (currentTracksType === 'likes') {
-        const currentTrack = currentTracksList[currentTracksIndex];
-        const track = currentTrack.track;
-        const title = track.name;
-        const artist = track.artists[0].name;
-        let cover = "https://placehold.co/250?text=No+Cover"
-        if (track.album && track.album.images && track.album.images[0]) {
-            cover = track.album.images[0].url;
-        }
-        playPreview(track.uri);
-        // const cover = track.album.images.url[0];
-        console.log(track.album)
-        document.getElementById("track-art").src = cover;
-        document.getElementById("track-title").innerText = title;
-        document.getElementById("track-artist").innerText = artist;
-        console.log(`Now playing: ${title} - ${artist}`)
-    } else {
-        const currentTrack = currentTracksList[currentTracksIndex];
-        const track = currentTrack.item;
-        const title = track.name;
-        const artist = track.artists[0].name;
-        let cover = "https://placehold.co/250?text=No+Cover"
-        if (track.album && track.album.images && track.album.images[0]) {
-            cover = track.album.images[0].url;
-        }
-        playPreview(track.uri);
-        // const cover = track.album.images.url[0];
-        console.log(track.album)
-        document.getElementById("track-art").src = cover;
-        document.getElementById("track-title").innerText = title;
-        document.getElementById("track-artist").innerText = artist;
-        console.log(`Now playing: ${title} - ${artist}`)
+    const currentTrack = currentTracksList[currentTracksIndex];
+    const track = currentTracksType === 'likes' ? currentTrack.track : currentTrack.item;
+    const title = track.name;
+    const artist = track.artists[0].name;
+    let cover = "https://placehold.co/250?text=No+Cover"
+    if (track.album && track.album.images && track.album.images[0]) {
+        cover = track.album.images[0].url;
     }
+    playPreview(track.uri);
+    document.getElementById("track-art").src = cover;
+    document.getElementById("track-title").innerText = title;
+    document.getElementById("track-artist").innerText = artist;
+    console.log(`Now playing: ${title} - ${artist}`)
 }
 async function getUserID() {
     try {
