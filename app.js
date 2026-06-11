@@ -1,5 +1,5 @@
 let authToken = "";
-const redirectUri = "https://maxolotled.github.io/TrackOrTrash/index.html";
+const redirectUri = "https://maxolotled.github.io/TrackOrTrash/index.html/";
 let currentTracksList = [];
 let currentTracksIndex = 0;
 let currentTracksType = "";
