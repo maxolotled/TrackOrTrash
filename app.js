@@ -334,7 +334,12 @@ function viewDashboard() { // view the sorting page
 }
 
 async function Trash() { // delete the song
-
+    const card = document.querySelector(".track-card");
+    card.classList.add("swipe-left");
+    card.addEventListener("animationend", () => {
+        card.classList.remove("swipe-left");
+        nextTrack();
+    }, { once: true });  // once: true zorgt dat de listener zichzelf verwijdert na één keer
     if (currentTracksType === "likes") {
         const currentItem = currentTracksList[currentTracksIndex];
         const track = currentItem.track;
@@ -351,7 +356,6 @@ async function Trash() { // delete the song
             if (response.status === 200) {
                 console.log("Track deleted:", uri);
                 showToast("Song trashed!", true)
-                nextTrack();
             } else {
                 const err = await response.json();
                 showToast(`An error occured while getting song details: ${err.error?.message || response.status}`, true)
@@ -375,7 +379,6 @@ async function Trash() { // delete the song
             if (response.status === 200) {
                 showToast("Song trashed!", true)
                 console.log("Track deleted:", uri)
-                nextTrack()
             } else {
                 const error = await response.json();
                 showToast("Error when deleting:" + error, true);
@@ -387,9 +390,14 @@ async function Trash() { // delete the song
 }
 
 function Track() { // keep the song
+    const card = document.querySelector(".track-card");
+    card.classList.add("swipe-right");
+    card.addEventListener("animationend", () => {
+        card.classList.remove("swipe-right");
+        nextTrack();
+    }, { once: true });  // once: true zorgt dat de listener zichzelf verwijdert na één keer
     showToast("Song kept!")
     console.log("Song Tracked");
-    nextTrack();
 }
 
 function nextTrack() {
@@ -408,3 +416,9 @@ function nextTrack() {
         localStorage.setItem("progress_" + type, JSON.stringify(progress));
     }
 }
+
+document.addEventListener("keydown", (e) => {
+    if (document.getElementById("dashboard").classList.contains("hidden")) return;
+    if (e.key === "ArrowLeft") Trash();
+    if (e.key === "ArrowRight") Track();
+});

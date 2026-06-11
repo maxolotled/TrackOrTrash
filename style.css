@@ -224,3 +224,31 @@ button.hover {
         transform: translateY(0);
     }
 }
+
+@keyframes swipeLeft {
+    to {
+        transform: translateX(-150%) rotate(-20deg);
+        opacity: 0;
+    }
+}
+
+@keyframes swipeRight {
+    to {
+        transform: translateX(150%) rotate(20deg);
+        opacity: 0;
+    }
+}
+
+.swipe-left {
+    animation: swipeLeft 0.4s ease forwards;
+    box-shadow: 0 0 40px rgba(241, 96, 96, 0.8)
+}
+
+.swipe-right {
+    animation: swipeRight 0.4s ease forwards;
+    box-shadow: 0 0 40px rgba(125, 241, 96, 0.8)
+}
+
+.track-card {
+    transition: box-shadow 0.1s ease;
+}
