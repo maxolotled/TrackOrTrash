@@ -154,6 +154,7 @@ function viewHome() {  // hide everything except for home
     document.getElementById("setup").classList.add("hidden");
     document.getElementById("home").classList.remove("hidden");
     document.getElementById("logout").classList.remove("hidden");
+    document.getElementById("stop").classList.add("hidden")
 }
 
 function logout() { // delete api keys, sign out
@@ -165,9 +166,25 @@ function logout() { // delete api keys, sign out
 }
 
 function startSorting(type, id) {
+    currentTracksType = type;
+    const typekey = type === 'likes' ? 'likes' : id;
+    const savedProgress = localStorage.getItem("progress_" + typekey)
+    if (savedProgress) {
+        if (confirm("You have saved progress with this playlist. Would you like to continue where you left of?")) {
+            progress = JSON.parse(savedProgress)
+            currentTracksType = progress.type
+            currentTracksList = progress.list
+            currentTracksIndex = progress.index
+            viewDashboard();
+            displayCurrentTrack();
+            return;
+        } else {
+            localStorage.removeItem("progress_" + typekey)
+        }
+    }
     viewDashboard();
-    currentTracksType = type
     if (type === 'likes') {
+        currentPlaylistId = 'likes';
         getLikedTracks();
     } else {
         currentPlaylistId = id;
@@ -262,9 +279,9 @@ async function getLikedTracks() { // pull all liked songs from spotify
         }
     }
     if (allTracks && allTracks.length > 0) {
-        currentTracksList = shuffle(allTracks);
-        currentTracksIndex = 0
+        currentTracksList = shuffle(allTracks.filter(item => item.track != null));        currentTracksIndex = 0
         displayCurrentTrack();
+        document.getElementById("stop").classList.remove("hidden")
     } else {
         showToast("No liked songs found.", true)
         viewHome();
@@ -296,15 +313,20 @@ async function getPlaylistTracks(id) {
         }
     }
     if (allTracks && allTracks.length > 0) {
-        currentTracksList = shuffle(allTracks);
-        currentTracksIndex = 0;
+        currentTracksList = shuffle(allTracks.filter(item => item.item != null));        currentTracksIndex = 0;
         displayCurrentTrack();
+        document.getElementById("stop").classList.remove("hidden")
     } else {
         showToast("Playlist is empty!", true)
         viewHome();
     }
 }
-
+function stopSorting() {
+    if(confirm('Stop sorting? Your progress will be saved.')) {
+        viewHome();
+        showToast("Your progress has been saved!")
+    }
+}
 function viewDashboard() { // view the sorting page
     document.getElementById("setup").classList.add("hidden")
     document.getElementById("home").classList.add("hidden")
@@ -357,7 +379,6 @@ async function Trash() { // delete the song
             } else {
                 const error = await response.json();
                 showToast("Error when deleting:" + error, true);
-                showToast(`Error when deleting song: ${error.error?.message || response.status}`)
             }
         } catch (error) {
             showToast("Network error:" + error, true)
@@ -377,6 +398,13 @@ function nextTrack() {
         showToast("You've sorted through all songs!")
         viewHome();
     } else {
+        const type = currentTracksType === 'likes' ? 'likes' : currentPlaylistId;
+        const progress = {
+            type: currentTracksType,
+            index: currentTracksIndex,
+            list: currentTracksList
+        }
         displayCurrentTrack();
+        localStorage.setItem("progress_" + type, JSON.stringify(progress));
     }
 }
