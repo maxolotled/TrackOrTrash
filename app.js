@@ -79,7 +79,7 @@ async function fetchToken(code) { // get spotify authorization token
             authToken = data.access_token;
             console.log("Access token: " + authToken);
             window.history.pushState({}, document.title, window.location.pathname);
-            getUserID();
+            await getUserID();
             getPlaylists();
         } else {
             showToast("Response obtained, but no access token found:" + data, true);
@@ -349,7 +349,7 @@ async function Trash() { // delete the song
 
             if (response.status === 200) {
                 console.log("Track deleted:", uri);
-                showToast("Song trashed!")
+                showToast("Song trashed!", true)
                 nextTrack();
             } else {
                 const err = await response.json();
@@ -373,7 +373,7 @@ async function Trash() { // delete the song
                 body: JSON.stringify({ items: [{ uri: uri }] })
             });
             if (response.status === 200) {
-                showToast("Song trashed!")
+                showToast("Song trashed!", true)
                 console.log("Track deleted:", uri)
                 nextTrack()
             } else {
