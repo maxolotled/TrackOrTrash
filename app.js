@@ -16,7 +16,6 @@ window.onload = function() {  // check on window load if already signed in
     if (code) { // if returning from spotify sign in
         console.log("Authorization code gevonden: " + code);
         fetchToken(code);
-        showToast("Signed in!")
     } 
     else {
         const storedID = localStorage.getItem("clientID");
@@ -77,6 +76,7 @@ async function fetchToken(code) { // get spotify authorization token
 
         if (data.access_token) {
             authToken = data.access_token;
+            showToast("Logged in!")
             console.log("Access token: " + authToken);
             window.history.pushState({}, document.title, window.location.pathname);
             await getUserID();
@@ -161,7 +161,6 @@ function logout() { // delete api keys, sign out
         localStorage.removeItem("clientID");
         localStorage.removeItem("clientSecret");
         window.location.href = window.location.pathname;
-        showToast("Logged out")
     }
 }
 
@@ -241,7 +240,7 @@ async function getUserID() {
         userID = data.id;
         console.log('User ID:' + userID)
     } catch (error) {
-        showToast(error, true);
+        showToast(error.message, true);
     }
 }
 
@@ -259,7 +258,7 @@ async function getLikedTracks() { // pull all liked songs from spotify
             allTracks = allTracks.concat(data.items);
             url = data.next
         } catch (error) {
-            showToast(error, true)
+            showToast(error.message, true)
         }
     }
     if (allTracks && allTracks.length > 0) {
@@ -293,7 +292,7 @@ async function getPlaylistTracks(id) {
             allTracks = allTracks.concat(data.items);
             url = data.next
         } catch (error) {
-            showToast(error, true)
+            showToast(error.message, true)
         }
     }
     if (allTracks && allTracks.length > 0) {
@@ -333,7 +332,6 @@ async function Trash() { // delete the song
                 nextTrack();
             } else {
                 const err = await response.json();
-                showToast("Error:" + err.error?.message, true);
                 showToast(`An error occured while getting song details: ${err.error?.message || response.status}`, true)
             }
         } catch (error) {
