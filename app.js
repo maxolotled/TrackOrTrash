@@ -82,7 +82,7 @@ async function fetchToken(code) { // get spotify authorization token
             await getUserID();
             getPlaylists();
         } else {
-            showToast("Response obtained, but no access token found:" + data, true);
+            showToast("Response obtained, but no access token found!", true);
         }
     }
     catch(error) {
