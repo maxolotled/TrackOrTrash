@@ -55,6 +55,10 @@ function login() {  // send the other to spotify's login page
     window.location = loginUrl;
 }
 
+function openTutorial() {
+    window.open('https://docs.trackortrash.me/spotify', 'blank', 'noopener,noreferrer')
+}
+
 async function fetchToken(code) { // get spotify authorization token
     const storedID = localStorage.getItem("clientID");
     const storedSecret = localStorage.getItem("clientSecret");
