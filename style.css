@@ -287,18 +287,19 @@ button.hover {
         padding: 20px 15px;
     }
 
-    #logout {
-        top: 10px;
-        right: 10px;
-        font-size: 0.75rem;
-        padding: 6px 10px;
+    #logout, #stop {
+        position: absolute;
+        top: 20px;
+        background: none !important;
+        border: none !important;
+        padding: 0 !important;
+        cursor: pointer;
     }
-
-    #stop {
-        top: 10px;
-        right: 90px;
-        font-size: 0.75rem;
-        padding: 6px 10px;
+    #logout { right: 20px; }
+    #stop { right: 70px; }
+    #logout svg, #stop svg {
+        width: 40px !important;
+        height: 40px !important;
     }
 
     h1 {
@@ -398,3 +399,18 @@ button.hover {
     text-align: center;
     margin-top: 5px;
 }
+
+    #logout, #stop {
+        position: absolute;
+        top: 20px;
+        background: none !important;
+        border: none !important;
+        padding: 0 !important;
+        cursor: pointer;
+    }
+    #logout { right: 20px; }
+    #stop { right: 70px; }
+    #logout svg, #stop svg {
+        width: 80px !important;
+        height: 80px !important;
+    }
