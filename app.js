@@ -259,6 +259,11 @@ function displayCurrentTrack() {
     document.getElementById("track-title").innerText = title;
     document.getElementById("track-artist").innerText = artist;
     console.log(`Now playing: ${title} - ${artist}`)
+    if (currentTracksType === 'likes') {
+        document.getElementById("love").classList.add("hidden")
+    } else {
+        document.getElementById("love").classList.remove("hidden")
+    }
 }
 async function getUserID() {
     try {
@@ -414,11 +419,21 @@ function Track() { // keep the song
     console.log("Song Tracked");
 }
 
+function Love() {
+    const card = document.querySelector(".track-card");
+    card.classList.add("swipe-up");
+    card.addEventListener("animationend", () => {
+        card.classList.remove("swipe-up");
+        showToast("Song added to liked songs!")
+        nextTrack();
+    }, { once: true });
+}
+
 function nextTrack() {
     currentTracksIndex = currentTracksIndex + 1
     if (currentTracksIndex >= currentTracksList.length) {
-        showToast("You've sorted through all songs!")
         viewHome();
+        showToast("You've sorted through all songs!")
     } else {
         const type = currentTracksType === 'likes' ? 'likes' : currentPlaylistId;
         const progress = {

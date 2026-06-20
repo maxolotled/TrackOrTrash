@@ -75,7 +75,8 @@ h3 {
 
 .action-buttons button, 
 #trash, 
-#track {
+#track,
+#love {
     background: none !important;
     background-color: transparent !important;
     border: none !important;
@@ -265,6 +266,18 @@ button.hover {
     }
 }
 
+@keyframes swipeUp {
+    to {
+        transform: translateY(-150%);
+        opacity: 0;
+    }
+}
+
+.swipe-up {
+    animation: swipeUp 0.6s ease forwards;
+    box-shadow: 0 0 40px rgba(98, 158, 193, 0.8)
+}
+
 .swipe-left {
     animation: swipeLeft 0.4s ease forwards;
     box-shadow: 0 0 40px rgba(241, 96, 96, 0.8)
@@ -344,7 +357,7 @@ button.hover {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 40px;
+        gap: 25px;
         margin-top: 20px;
         width: 100%;
     }
