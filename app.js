@@ -1,5 +1,7 @@
 let authToken = "";
-const redirectUri = "https://trackortrash.me";
+const redirectUri = window.location.hostname === "127.0.0.1"
+    ? "http://127.0.0.1:5500"
+    : "https://trackortrash.me";
 let currentTracksList = [];
 let currentTracksIndex = 0;
 let currentTracksType = "";
@@ -22,7 +24,12 @@ window.onload = function() {  // check on window load if already signed in
         const storedSecret = localStorage.getItem("clientSecret");
         
         if (storedID && storedSecret) { // if api keys exist
-            login();
+            if (confirm("We found saved credentials! Do you want to use them?")) {
+                login();
+            } else {
+                localStorage.removeItem("clientID");
+                localStorage.removeItem("clientSecret");
+            }
         }
     }
 }
