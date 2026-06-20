@@ -73,7 +73,24 @@ h3 {
     box-sizing: border-box;
 }
 
-button {
+.action-buttons button, 
+#trash, 
+#track {
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    cursor: pointer;
+    box-shadow: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+} /* written by ai */
+
+.card button {
     background-color: #1DB954;
     color: #FFFFFF;
     border: none;
@@ -143,6 +160,10 @@ button.hover {
     font-size: 1.2rem;
 }
 
+.card-info h2 {
+    font-size: 1.5rem;
+}
+
 .card-info p {
     margin: 0;
     color: white;
@@ -185,7 +206,10 @@ button.hover {
 
 #track-art {
     width: 100%;
-    max-width: 250px;
+    margin-top: 15px;
+    margin-right: 15px;
+    margin-left: 15px;
+    max-width: 290px;
     aspect-ratio: 1/1;
     object-fit: cover;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
@@ -253,6 +277,9 @@ button.hover {
 
 .track-card {
     transition: box-shadow 0.1s ease;
+    height: 460px;
+    width: 320px;
+    min-width: 0;
 }
 
 @media (max-width: 480px) {
@@ -290,12 +317,84 @@ button.hover {
         gap: 10px;
     }
 
+#trash img:hover {
+    background-color: #422;
+    transform: scale(1.1);
+}
+#track img:hover {
+    background-color: #1e4a27;
+    transform: scale(1.1);
+}
+.action-buttons button:active img {
+    transform: scale(0.9);
+}
+}
+.track-info {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    box-sizing: border-box;
+    text-align: center;
+    overflow: hidden; 
+}
+
     .action-buttons {
         display: flex;
-        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 20px;
+        width: 100%;
     }
 
     .action-buttons button {
-        width: 50%;
+        background: none !important;
+        border: none !important;
+        padding: 0 !important;
+        width: auto !important;
+        margin: 0 !important;
+        cursor: pointer;
+        outline: none;
+        transition: transform 0.2s ease;
     }
+
+    .action-buttons button img {
+        width: 85px !important;
+        height: 85px !important;
+        border-radius: 50%;
+        background-color: #333333;
+        padding: 14px;
+        box-sizing: border-box;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        transform: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+#track-title {
+    box-sizing: border-box;
+    max-width: 100%;
+    width: 100%;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center; 
+    margin-top: 10px; 
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+#track-artist {
+    box-sizing: border-box;
+    max-width: 100%;
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    margin-top: 5px;
 }

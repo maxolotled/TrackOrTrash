@@ -1,7 +1,7 @@
 let authToken = "";
 const redirectUri = window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:5500"
-    : "https://trackortrash.me";
+    : "https://trackortrash.me/index.html";
 let currentTracksList = [];
 let currentTracksIndex = 0;
 let currentTracksType = "";
@@ -162,6 +162,7 @@ async function getPlaylists() { // pull the user's playlists from the spotify AP
 
 function viewHome() {  // hide everything except for home
     pausePreview();
+    document.getElementById("dashboard").classList.add("hidden");
     document.getElementById("setup").classList.add("hidden");
     document.getElementById("home").classList.remove("hidden");
     document.getElementById("logout").classList.remove("hidden");
@@ -191,6 +192,7 @@ function startSorting(type, id) {
             return;
         } else {
             localStorage.removeItem("progress_" + typekey)
+            viewDashboard();
         }
     }
     viewDashboard();
@@ -342,6 +344,7 @@ function viewDashboard() { // view the sorting page
     document.getElementById("setup").classList.add("hidden")
     document.getElementById("home").classList.add("hidden")
     document.getElementById("dashboard").classList.remove("hidden")
+    document.getElementById("stop").classList.add("hidden")
 }
 
 async function Trash() { // delete the song
@@ -350,7 +353,7 @@ async function Trash() { // delete the song
     card.addEventListener("animationend", () => {
         card.classList.remove("swipe-left");
         nextTrack();
-    }, { once: true });  // once: true zorgt dat de listener zichzelf verwijdert na één keer
+    }, { once: true }); 
     if (currentTracksType === "likes") {
         const currentItem = currentTracksList[currentTracksIndex];
         const track = currentItem.track;
