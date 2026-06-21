@@ -189,6 +189,7 @@ function startSorting(type, id) {
             currentTracksIndex = progress.index
             viewDashboard();
             displayCurrentTrack();
+            document.getElementById("stop").classList.remove("hidden")
             return;
         } else {
             localStorage.removeItem("progress_" + typekey)
@@ -258,6 +259,7 @@ function displayCurrentTrack() {
     document.getElementById("track-art").src = cover;
     document.getElementById("track-title").innerText = title;
     document.getElementById("track-artist").innerText = artist;
+    document.getElementById("track-counter").innerText = `${currentTracksIndex + 1} / ${currentTracksList.length}`
     console.log(`Now playing: ${title} - ${artist}`)
     if (currentTracksType === 'likes') {
         document.getElementById("love").classList.add("hidden")
@@ -456,6 +458,7 @@ function nextTrack() {
     if (currentTracksIndex >= currentTracksList.length) {
         viewHome();
         showToast("You've sorted through all songs!")
+        localStorage.removeItem("progress_" + type);
     } else {
         const type = currentTracksType === 'likes' ? 'likes' : currentPlaylistId;
         const progress = {
@@ -472,4 +475,9 @@ document.addEventListener("keydown", (e) => {
     if (document.getElementById("dashboard").classList.contains("hidden")) return;
     if (e.key === "ArrowLeft") Trash();
     if (e.key === "ArrowRight") Track();
+    if (e.key === "ArrowUp") Love();
+    if (e.key === "Space") {
+        pausePreview();
+        showToast("Song paused.")
+    }
 });
