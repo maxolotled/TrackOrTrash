@@ -377,7 +377,7 @@ async function Trash() { // delete the song
                 showToast("Song trashed!", true)
             } else {
                 const err = await response.json();
-                showToast(`An error occured while getting song details: ${err.error?.message || response.status}`, true)
+                showToast(`An error occured while deleting song: ${err.error?.message || response.status}`, true)
             }
         } catch (error) {
             showToast("Network error:" + error, true);
@@ -414,19 +414,41 @@ function Track() { // keep the song
     card.addEventListener("animationend", () => {
         card.classList.remove("swipe-right");
         nextTrack();
-    }, { once: true });  // once: true zorgt dat de listener zichzelf verwijdert na één keer
+    }, { once: true });
     showToast("Song kept!")
     console.log("Song Tracked");
 }
 
-function Love() {
+async function Love() { // for normal playlists only: add song to liked songs
     const card = document.querySelector(".track-card");
     card.classList.add("swipe-up");
     card.addEventListener("animationend", () => {
         card.classList.remove("swipe-up");
-        showToast("Song added to liked songs!")
         nextTrack();
     }, { once: true });
+    const currentTrack = currentTracksList[currentTracksIndex]
+    const track = currentTrack.item;
+    const uri = track.uri;
+    try {
+        const encodedUri = encodeURIComponent(uri);
+        const response = await fetch(`https://api.spotify.com/v1/me/library?uris=${encodedUri}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + authToken
+            }
+        });
+
+        if (response.status === 200) {
+            console.log("Song loved:", uri)
+            showToast("Song added to liked songs!")
+        } else {
+            const err = await response.json();
+            showToast(`An error occured while adding song to liked songs: ${err.error?.message || response.status}`, true)
+        }
+    } catch {
+        console.log("error when putting to api")
+        showToast(`An error occured while trashing song.`, true)
+    }
 }
 
 function nextTrack() {
