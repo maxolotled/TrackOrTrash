@@ -361,4 +361,17 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowUp") Love();
 });
 
+const hammer = new Hammer(document.body);
+hammer.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+hammer.on('swipeleft swiperight swipeup', (e) => {
+    if (document.getElementById("dashboard").classList.contains("hidden")) return;
+    if (e.type === 'swipeleft') Trash();
+    if (e.type === 'swiperight') Track();
+    if (e.type === 'swipeup') {
+        if(!document.getElementById("love").classList.contains("hidden")) {
+            Love();
+        }
+    }
+})
+
 init();
