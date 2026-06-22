@@ -125,6 +125,7 @@ async function getPlaylists() { // pull the user's playlists from the spotify AP
 
 function viewHome() {  // hide everything except for home
     player.togglePlay();
+    document.title = `Track or Trash - playlist cleaner`
     document.getElementById("dashboard").classList.add("hidden");
     document.getElementById("setup").classList.add("hidden");
     document.getElementById("home").classList.remove("hidden");
@@ -209,6 +210,7 @@ function displayCurrentTrack() {
     const track = currentTracksType === 'likes' ? currentTrack.track : currentTrack.item;
     const title = track.name;
     const artist = track.artists[0].name;
+    document.title = `🎵 ${title} - ${artist} | Track or Trash`
     let cover = "https://placehold.co/250?text=No+Cover"
     if (track.album && track.album.images && track.album.images[0]) {
         cover = track.album.images[0].url;

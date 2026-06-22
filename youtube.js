@@ -213,6 +213,7 @@ function displayCurrentTrack() {
     const title = track.name;
     const artist = track.artist
     const cover = track.cover
+    document.title = `🎵 ${title} - ${artist} | Track or Trash`
     playPreview(track.id);
     document.getElementById("track-art").src = cover;
     document.getElementById("track-title").innerText = title;
@@ -260,6 +261,7 @@ function showToast(message, isError) {
 
 function viewHome() {  // hide everything except for home
     // player.togglePlay();
+    document.title = "Track or Trash - playlist cleaner"
     document.getElementById("dashboard").classList.add("hidden");
     document.getElementById("setup").classList.add("hidden");
     document.getElementById("home").classList.remove("hidden");
