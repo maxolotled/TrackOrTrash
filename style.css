@@ -294,7 +294,16 @@ button.hover {
     width: 320px;
     min-width: 0;
 }
-
+#switchToYoutube {
+    margin-top: 20px;
+    margin-bottom: 0px !important;
+    background-color: #FF0000 !important;
+}
+#howTo {
+    width: 50% !important;
+    height: 1% !important;
+    font-size: 0.5rem;
+}
 @media (max-width: 480px) {
     body {
         padding: 20px 15px;

@@ -1,0 +1,55 @@
+const gClientID = ""
+const redirectUri = window.location.hostname === "127.0.0.1"
+    ? "http://127.0.0.1:5500"
+    : "https://trackortrash.me/index.html";
+
+function switchToYoutube() {
+    localStorage.setItem("platform", "youtube")
+    console.log("Switching to youtube.")
+}
+
+const hasGoogleToken = window.location.hash.includes("access_token");
+const savedPlatform = localStorage.getItem("platform")
+let platformToLoad = "spotify";
+
+if (hasGoogleToken || savedPlatform === "youtube") {
+    platformToLoad = "youtube"
+} else if (savedPlatform === "spotify") {
+    platformToLoad = "spotify"
+}
+
+localStorage.setItem("platform", platformToLoad)
+
+function SaveKeys() { // save the api keys to localstorage
+    platformToLoad = "spotify"
+    localStorage.setItem("platform", "spotify")
+    const ID = document.getElementById("client-id").value;
+    const Secret = document.getElementById("client-secret").value;
+
+    if (ID === "" || Secret === "") { // Check if both fields actually have anything inside
+        alert("Please enter API credentials before signing in.")
+        return;
+    }
+    // Save the keys to LocalStorage, so they are securely stored on the user's device and not exposed to the server or external databases :)
+    localStorage.setItem("clientID", ID);
+    localStorage.setItem("clientSecret", Secret);
+    login();
+}
+
+function login() {  // send the other to spotify's login page
+    const liveID = localStorage.getItem("clientID"); 
+    const authEndpoint = "https://accounts.spotify.com/authorize";
+    const scopes = "playlist-read-private playlist-modify-private playlist-modify-public user-library-read user-library-modify playlist-modify-public streaming user-read-playback-state user-modify-playback-state";
+    
+    if (!liveID) {
+        alert("No user ID found!")
+        return;
+    }
+
+    const loginUrl = `${authEndpoint}?client_id=${liveID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=code`;
+    window.location = loginUrl;
+}
+
+const script = document.createElement("script");
+script.src = `${platformToLoad}.js`;
+document.body.appendChild(script);

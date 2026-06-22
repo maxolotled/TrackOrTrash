@@ -1,7 +1,4 @@
 let authToken = "";
-const redirectUri = window.location.hostname === "127.0.0.1"
-    ? "http://127.0.0.1:5500"
-    : "https://trackortrash.me/index.html";
 let currentTracksList = [];
 let currentTracksIndex = 0;
 let currentTracksType = "";
@@ -10,8 +7,7 @@ let spotifyDeviceId = null;
 let currentPlaylistId = null;
 let userID = null;
 
-window.onload = function() {  // check on window load if already signed in
-    // Rewritten by Gemini to fix bugs I could not find
+function init() {  // check on window load if already signed in
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code'); 
 
@@ -24,42 +20,13 @@ window.onload = function() {  // check on window load if already signed in
         const storedSecret = localStorage.getItem("clientSecret");
         
         if (storedID && storedSecret) { // if api keys exist
-            if (confirm("We found saved credentials! Do you want to use them?")) {
-                login();
-            } else {
-                localStorage.removeItem("clientID");
-                localStorage.removeItem("clientSecret");
+            if(document.getElementById("client-id")) {
+                document.getElementById("client-id").value = storedID
+                document.getElementById("client-secret").value = storedSecret
+                showToast("Loaded your saved spotify credentials!")
             }
         }
     }
-}
-
-function SaveKeys() { // save the api keys to localstorage
-    const ID = document.getElementById("client-id").value;
-    const Secret = document.getElementById("client-secret").value;
-
-    if (ID === "" || Secret === "") { // Check if both fields actually have anything inside
-        showToast("Please enter API credentials before signing in.", true)
-        return;
-    }
-    // Save the keys to LocalStorage, so they are securely stored on the user's device and not exposed to the server or external databases :)
-    localStorage.setItem("clientID", ID);
-    localStorage.setItem("clientSecret", Secret);
-    login();
-}
-
-function login() {  // send the other to spotify's login page
-    const liveID = localStorage.getItem("clientID"); 
-    const authEndpoint = "https://accounts.spotify.com/authorize";
-    const scopes = "playlist-read-private playlist-modify-private playlist-modify-public user-library-read user-library-modify playlist-modify-public streaming user-read-playback-state user-modify-playback-state";
-    
-    if (!liveID) {
-        showToast("No user ID found!", true)
-        return;
-    }
-
-    const loginUrl = `${authEndpoint}?client_id=${liveID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=code`;
-    window.location = loginUrl;
 }
 
 function openTutorial() {
@@ -477,3 +444,5 @@ document.addEventListener("keydown", (e) => {
         showToast("Song (un)paused.")
     }
 });
+
+init();
