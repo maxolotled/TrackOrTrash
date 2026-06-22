@@ -1,25 +1,28 @@
 # TrackOrTrash
-An website to sort your Spotify (and soon, other apps) playlists by swiping.
+An website to sort your Spotify or Youtube Music (and soon, other apps) playlists by swiping.
 
 ## See it in use
 ![Example GIF](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGk4dXNoYWRzb2M0cWZma3VwbnpxaDFlMGozZXhzY2hjaDhpbHRsdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CK0n24Zvh8JB1jabCE/giphy.gif)
 
 ## Want to try?
-Review the documentation first to create your own spotify API keys!  
+No problem! Click the button below and sign in. Review the documentation first, if using Spotify, so you can add your own API keys!
 
 [![Documentation here](https://img.shields.io/badge/Docs,%20FAQ%20&%20info-Read%20Here-24292e?style=for-the-badge&logo=read-the-docs&logoColor=white)](https://docs.trackortrash.me)  
 [![Try it out!](https://img.shields.io/badge/TrackOrTrash.me-Try%20now!-1DB954?style=for-the-badge&logo=spotify)](https://trackortrash.me)
+
 ## Features
 - Sort your playlists easily be swiping
 - Add songs to liked songs while sorting
-- Includes song previews via Spotify Webplayer
+- Includes song previews via Spotify Webplayer or YouTube embeds
 - Stores your progress
 - Songs are shown in random order
 - Entirely free
 - All data stored locally
+- Supports both Spotify & Youtube Music
 
 ## How it works
-Users generate their own Spotify API keys to utilise the website, as Spotify decided apps need 25.000 users before they can become apps. Using these API keys, which are stored on the user's own laptop in localStorage to reduce privacy concerns, they can log in via Spotify and their playlists and songs are immediately loaded via the Spotify API! Everything runs client-side; there's no backend involved at all.
+For Spotify, users generate their own Spotify API keys to utilise the website, as Spotify decided apps need 25.000 users before they can become apps. Using these API keys, which are stored on the user's own laptop in localStorage to reduce privacy concerns, they can log in via Spotify and their playlists and songs are immediately loaded via the Spotify API! Everything runs client-side; there's no backend involved at all.
+For Youtube, users sign in using Google's OAuth & start sorting immediately!
 
 ## Credits
 - All those annoying paid sorting apps, for inspiring me to make this :D
