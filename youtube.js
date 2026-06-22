@@ -213,7 +213,7 @@ function displayCurrentTrack() {
     const title = track.name;
     const artist = track.artist
     const cover = track.cover
-    // playPreview(track.uri);
+    playPreview(track.id);
     document.getElementById("track-art").src = cover;
     document.getElementById("track-title").innerText = title;
     document.getElementById("track-artist").innerText = artist;
@@ -267,7 +267,13 @@ function viewHome() {  // hide everything except for home
     document.getElementById("stop").classList.add("hidden")
     showToast("Both music & video playlists are shown. View the FAQ for more info.")
 }
-
+function stopSorting() {
+    if(confirm('Stop sorting? Your progress will be saved.')) {
+        viewHome();
+        showToast("Your progress has been saved!")
+    }
+    playPreview("")
+}
 function Track() { // keep the song
     const card = document.querySelector(".track-card");
     card.classList.add("swipe-right");
@@ -312,5 +318,32 @@ async function Trash() { // delete the song
         }
     }
 }
+async function Love() {
+    const card = document.querySelector(".track-card");
+    card.classList.add("swipe-up");
+    card.addEventListener("animationend", () => {
+        card.classList.remove("swipe-up");
+        nextTrack();
+    }, { once: true });
+    const currentItem = currentTracksList[currentTracksIndex];
+    try {
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/videos/rate?id=${currentItem.id}&rating=like`, {
+            method: 'POST',
+            headers: {'Authorization': 'Bearer ' + authToken}
+        });
+    } catch (error) {
+        showToast("Network error:" + error, true)
+    }
+}
 
+function playPreview(id) {
+    const player = document.getElementById("yt-preview-player");
+    if (!player) return;
+    if (!id) {
+        player.src = "";
+        return;
+    }
+    player.src = `https://www.youtube.com/embed/${id}?autoplay=1&enablejsapi=1`
+    console.log(`Now playing: youtu.be/${id}`)
+}
 init();
