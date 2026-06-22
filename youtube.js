@@ -148,6 +148,12 @@ function shuffle(array) {
     }
     return array;
 }
+function viewDashboard() { // view the sorting page
+    document.getElementById("setup").classList.add("hidden")
+    document.getElementById("home").classList.add("hidden")
+    document.getElementById("dashboard").classList.remove("hidden")
+    document.getElementById("stop").classList.add("hidden")
+}
 
 function displayCurrentTrack() {
     const track = currentTracksList[currentTracksIndex];
@@ -167,6 +173,25 @@ function displayCurrentTrack() {
         document.getElementById("love").classList.remove("hidden")
     }
 }
+
+function nextTrack() {
+    currentTracksIndex = currentTracksIndex + 1
+    if (currentTracksIndex >= currentTracksList.length) {
+        viewHome();
+        showToast("You've sorted through all songs!")
+        localStorage.removeItem("TRprogress_" + type);
+    } else {
+        const type = currentTracksType === 'likes' ? 'likes' : currentPlaylistId;
+        const progress = {
+            type: currentTracksType,
+            index: currentTracksIndex,
+            list: currentTracksList
+        }
+        displayCurrentTrack();
+        localStorage.setItem("TRprogress_" + type, JSON.stringify(progress));
+    }
+}
+
 async function getUserID() {
     try {
         const response = await fetch('https://api.spotify.com/v1/me', {
@@ -204,4 +229,16 @@ function viewHome() {  // hide everything except for home
     document.getElementById("stop").classList.add("hidden")
     showToast("Both music & video playlists are shown. View the FAQ for more info.")
 }
+
+function Track() { // keep the song
+    const card = document.querySelector(".track-card");
+    card.classList.add("swipe-right");
+    card.addEventListener("animationend", () => {
+        card.classList.remove("swipe-right");
+        nextTrack();
+    }, { once: true });
+    showToast("Song kept!")
+    console.log("Song Tracked");
+}
+
 init();
