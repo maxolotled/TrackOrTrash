@@ -19,8 +19,12 @@
     <!-- Input fields -->
     <main id="setup">
         <div class="card">
-            <button id="switchToYoutube" onclick="switchToYoutube()">Use Youtube Music</button>
-            <h2>Or connect your Spotify API:</h2>
+            <p>The best, 100% free playlist cleaner. Sign in, select a playlist, and swipe away! Keep your favorites (or even add them to your liked songs), trash the rest.</p>
+        </div>
+        <div class="card">
+            <h2>Pick a Sign-in method:</h3>
+            <button id="switchToYoutube" onclick="switchToYoutube()">Authorize YouTube Music</button>
+            <h3>Or connect your Spotify API:</h3>
             <div class="input-group">
                 <label>Client ID</label>
                 <input type="text" id="client-id" placeholder="Paste your Client ID">
@@ -71,6 +75,17 @@
 
         </div>
     </section>
+    <footer class="app-footer">
+        <div class="footer-cont">
+            <p class="disclaimer">Copyright 2026 Track or Trash. All rights reserved.</p>
+            <div class="disclaimer">
+                <a href="http://docs.trackortrash.me/privacy" target="_blank" rel="noopener">Privacy Policy</a>
+                <span class="divider">|</span>
+                <a href="http://docs.trackortrash.me/tos" target="_blank" rel="noopener">Terms of Service</a>
+                <p class="disclaimer">Disclaimer: Track or Trash is an independent project and is not affiliated with, endorsed by, or associated with Google LLC, Youtube, or Spotify AB. All trademarks, service marks, and company names are the property of their respective owners.</p>
+            </div>
+        </div>
+    </footer>
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script src="router.js"></script>
 </body>
