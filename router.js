@@ -1,4 +1,4 @@
-const gClientID = ""
+const gClientID = "713258863184-m3mbncfbeairrgu4m5kassaeb4ugi67t.apps.googleusercontent.com"
 const redirectUri = window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:5500"
     : "https://trackortrash.me/index.html";
@@ -6,6 +6,11 @@ const redirectUri = window.location.hostname === "127.0.0.1"
 function switchToYoutube() {
     localStorage.setItem("platform", "youtube")
     console.log("Switching to youtube.")
+    const authEndpoint = "https://accounts.google.com/o/oauth2/v2/auth"
+    const scopes = encodeURIComponent("https://www.googleapis.com/auth/youtube")
+    const redirect = encodeURIComponent(redirectUri)
+    const loginURL = `${authEndpoint}?client_id=${gClientID}&redirect_uri=${redirect}&scope=${scopes}&response_type=token`;
+    window.location = loginURL
 }
 
 const hasGoogleToken = window.location.hash.includes("access_token");
