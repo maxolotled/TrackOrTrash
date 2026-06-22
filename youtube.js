@@ -2,6 +2,7 @@ let authToken = "";
 let currentTracksList = [];
 let currentTracksIndex = 0;
 let currentTracksType = "";
+let currentPlaylistId = "";
 
 function init() {
     const hash = window.location.hash
@@ -69,7 +70,7 @@ function startSorting(type, id) {
     const savedProgress = localStorage.getItem("YTprogress_" + typekey)
     if (savedProgress) {
         if (confirm("You have saved progress with this playlist. Would you like to continue where you left of?")) {
-            progress = JSON.parse(savedProgress)
+            const progress = JSON.parse(savedProgress)
             currentTracksType = progress.type
             currentTracksList = progress.list
             currentTracksIndex = progress.index
@@ -100,7 +101,7 @@ async function getLikedTracks() { // pull all liked songs from spotify
     let keepGoing = true;
     while (keepGoing) {
         try {
-            let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=LM&MaxResults=50`
+            let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=LM&maxResults=50`
             if (nextPageToken) {
                 url += `&pageToken=${nextPageToken}`
             }
@@ -127,6 +128,7 @@ async function getLikedTracks() { // pull all liked songs from spotify
         .filter(item => item.snippet && item.snippet.title !== "Deleted video" && item.snippet.title !== "Private video")
         .map(item => ({
             id: item.contentDetails.videoId,
+            playlistItemId: item.id,
             name: item.snippet.title,
             artist: item.snippet.videoOwnerChannelTitle || item.snippet.channelTitle,
             cover: item.snippet.thumbnails && item.snippet.thumbnails.medium ? item.snippet.thumbnails.medium.url : 'https://placehold.co/150?text=No+Cover'
@@ -137,6 +139,56 @@ async function getLikedTracks() { // pull all liked songs from spotify
         document.getElementById("stop").classList.remove("hidden")
     } else {
         showToast("No liked songs found.", true)
+        viewHome();
+    }
+}
+
+async function getPlaylistTracks(id) { // pull all liked songs from spotify
+    currentTracksType = "playlist"
+    showToast("Getting your playlist tracks..")
+    let allTracks = []
+    let nextPageToken = "";
+    let keepGoing = true;
+    while (keepGoing) {
+        try {
+            let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${id}&maxResults=50`
+            if (nextPageToken) {
+                url += `&pageToken=${nextPageToken}`
+            }
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {'Authorization': 'Bearer ' + authToken}
+            });
+            const data = await response.json();
+            if (data.items) {
+                allTracks = allTracks.concat(data.items);
+            }
+            if (data.nextPageToken) {
+                nextPageToken = data.nextPageToken;
+            } else {
+                keepGoing = false;
+            }
+        } catch (error) {
+            showToast(error.message, true)
+            keepGoing = false;
+        }
+    }
+    if (allTracks && allTracks.length > 0) {
+        const cleanTracks = allTracks
+        .filter(item => item.snippet && item.snippet.title !== "Deleted video" && item.snippet.title !== "Private video")
+        .map(item => ({
+            id: item.contentDetails.videoId,
+            playlistItemId: item.id,
+            name: item.snippet.title,
+            artist: item.snippet.videoOwnerChannelTitle || item.snippet.channelTitle,
+            cover: item.snippet.thumbnails && item.snippet.thumbnails.medium ? item.snippet.thumbnails.medium.url : 'https://placehold.co/150?text=No+Cover'
+        }));
+        currentTracksList = shuffle(cleanTracks);        
+        currentTracksIndex = 0;
+        displayCurrentTrack();
+        document.getElementById("stop").classList.remove("hidden")
+    } else {
+        showToast("No playlist songs found.", true)
         viewHome();
     }
 }
@@ -175,34 +227,20 @@ function displayCurrentTrack() {
 }
 
 function nextTrack() {
+    const type = currentTracksType === 'likes' ? 'likes' : currentPlaylistId;
     currentTracksIndex = currentTracksIndex + 1
     if (currentTracksIndex >= currentTracksList.length) {
         viewHome();
         showToast("You've sorted through all songs!")
-        localStorage.removeItem("TRprogress_" + type);
+        localStorage.removeItem("YTprogress_" + type);
     } else {
-        const type = currentTracksType === 'likes' ? 'likes' : currentPlaylistId;
         const progress = {
             type: currentTracksType,
             index: currentTracksIndex,
             list: currentTracksList
         }
         displayCurrentTrack();
-        localStorage.setItem("TRprogress_" + type, JSON.stringify(progress));
-    }
-}
-
-async function getUserID() {
-    try {
-        const response = await fetch('https://api.spotify.com/v1/me', {
-            method: 'GET',
-            headers: {'Authorization': 'Bearer ' + authToken}
-        });
-        const data = await response.json();
-        userID = data.id;
-        console.log('User ID:' + userID)
-    } catch (error) {
-        showToast(error.message, true);
+        localStorage.setItem("YTprogress_" + type, JSON.stringify(progress));
     }
 }
 
@@ -239,6 +277,40 @@ function Track() { // keep the song
     }, { once: true });
     showToast("Song kept!")
     console.log("Song Tracked");
+}
+
+async function Trash() { // delete the song
+    const card = document.querySelector(".track-card");
+    card.classList.add("swipe-left");
+    card.addEventListener("animationend", () => {
+        card.classList.remove("swipe-left");
+        nextTrack();
+    }, { once: true }); 
+    if (currentTracksType === "likes") {
+        const currentItem = currentTracksList[currentTracksIndex];
+        try {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/videos/rate?id=${currentItem.id}&rating=none`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + authToken
+                }
+            });
+        } catch (error) {
+            showToast("Network error:" + error, true);
+        }
+    } else {
+        const currentItem = currentTracksList[currentTracksIndex];
+        try {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?id=${currentItem.playlistItemId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + authToken
+                },
+            });
+        } catch (error) {
+            showToast("Network error:" + error, true)
+        }
+    }
 }
 
 init();
