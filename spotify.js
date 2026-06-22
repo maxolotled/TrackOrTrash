@@ -412,13 +412,13 @@ async function Love() { // for normal playlists only: add song to liked songs
 }
 
 function nextTrack() {
+    const type = currentTracksType === 'likes' ? 'likes' : currentPlaylistId;
     currentTracksIndex = currentTracksIndex + 1
     if (currentTracksIndex >= currentTracksList.length) {
         viewHome();
         showToast("You've sorted through all songs!")
         localStorage.removeItem("progress_" + type);
     } else {
-        const type = currentTracksType === 'likes' ? 'likes' : currentPlaylistId;
         const progress = {
             type: currentTracksType,
             index: currentTracksIndex,

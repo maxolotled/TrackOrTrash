@@ -267,6 +267,13 @@ function viewHome() {  // hide everything except for home
     document.getElementById("stop").classList.add("hidden")
     showToast("Both music & video playlists are shown. View the FAQ for more info.")
 }
+function logout() { // delete api keys, sign out
+    if(confirm('Remove all API keys and log out?')) {
+        localStorage.removeItem("clientID");
+        localStorage.removeItem("clientSecret");
+        window.location.href = window.location.pathname;
+    }
+}
 function stopSorting() {
     if(confirm('Stop sorting? Your progress will be saved.')) {
         viewHome();
@@ -346,4 +353,12 @@ function playPreview(id) {
     player.src = `https://www.youtube.com/embed/${id}?autoplay=1&enablejsapi=1`
     console.log(`Now playing: youtu.be/${id}`)
 }
+
+document.addEventListener("keydown", (e) => {
+    if (document.getElementById("dashboard").classList.contains("hidden")) return;
+    if (e.key === "ArrowLeft") Trash();
+    if (e.key === "ArrowRight") Track();
+    if (e.key === "ArrowUp") Love();
+});
+
 init();
