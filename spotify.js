@@ -29,10 +29,6 @@ function init() {  // check on window load if already signed in
     }
 }
 
-function openTutorial() {
-    window.open('https://docs.trackortrash.me/spotify', 'blank', 'noopener,noreferrer')
-}
-
 async function fetchToken(code) { // get spotify authorization token
     const storedID = localStorage.getItem("clientID");
     const storedSecret = localStorage.getItem("clientSecret");

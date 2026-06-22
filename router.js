@@ -41,6 +41,10 @@ function SaveKeys() { // save the api keys to localstorage
     login();
 }
 
+function openTutorial() {
+    window.open('https://docs.trackortrash.me/spotify', 'blank', 'noopener,noreferrer')
+}
+
 function login() {  // send the other to spotify's login page
     const liveID = localStorage.getItem("clientID"); 
     const authEndpoint = "https://accounts.spotify.com/authorize";
