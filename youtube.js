@@ -22,7 +22,7 @@ async function getPlaylists() { // pull the user's playlists from the spotify AP
     menuContainer.innerHTML = "";
 
     const likedCard = `
-        <div class="menu-card liked-songs-card" onclick="startSorting('likes', 'me')">
+        <div class="menu-card liked-songs-card" onclick="startSorting('likes', 'LM')">
             <div class="card-art-placeholder">💖</div>
             <div class="card-info">
                 <h3>Liked Songs</h3>
@@ -63,7 +63,37 @@ async function getPlaylists() { // pull the user's playlists from the spotify AP
     }
 }
 
+function startSorting(type, id) {
+    currentTracksType = type;
+    const typekey = type === 'likes' ? 'likes' : id;
+    const savedProgress = localStorage.getItem("YTprogress_" + typekey)
+    if (savedProgress) {
+        if (confirm("You have saved progress with this playlist. Would you like to continue where you left of?")) {
+            progress = JSON.parse(savedProgress)
+            currentTracksType = progress.type
+            currentTracksList = progress.list
+            currentTracksIndex = progress.index
+            viewDashboard();
+            displayCurrentTrack();
+            document.getElementById("stop").classList.remove("hidden")
+            return;
+        } else {
+            localStorage.removeItem("YTprogress_" + typekey)
+            viewDashboard();
+        }
+    }
+    viewDashboard();
+    if (type === 'likes') {
+        currentPlaylistId = 'likes';
+        getLikedTracks();
+    } else {
+        currentPlaylistId = id;
+        getPlaylistTracks(id);
+    }
+}
+
 async function getLikedTracks() { // pull all liked songs from spotify
+    currentTracksType = "likes"
     showToast("Getting your liked tracks..")
     let allTracks = []
     let nextPageToken = "";
@@ -117,6 +147,38 @@ function shuffle(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
+}
+
+function displayCurrentTrack() {
+    const track = currentTracksList[currentTracksIndex];
+    if (!track) return;
+    const title = track.name;
+    const artist = track.artist
+    const cover = track.cover
+    // playPreview(track.uri);
+    document.getElementById("track-art").src = cover;
+    document.getElementById("track-title").innerText = title;
+    document.getElementById("track-artist").innerText = artist;
+    document.getElementById("track-counter").innerText = `${currentTracksIndex + 1} / ${currentTracksList.length}`
+    console.log(`Now playing on Youtube: ${title} - ${artist}`)
+    if (currentTracksType === 'likes') {
+        document.getElementById("love").classList.add("hidden")
+    } else {
+        document.getElementById("love").classList.remove("hidden")
+    }
+}
+async function getUserID() {
+    try {
+        const response = await fetch('https://api.spotify.com/v1/me', {
+            method: 'GET',
+            headers: {'Authorization': 'Bearer ' + authToken}
+        });
+        const data = await response.json();
+        userID = data.id;
+        console.log('User ID:' + userID)
+    } catch (error) {
+        showToast(error.message, true);
+    }
 }
 
 function showToast(message, isError) {
