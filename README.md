@@ -18,3 +18,7 @@ Review the documentation first to create your own spotify API keys!
 
 ## How it works
 Users generate their own Spotify API keys to utilise the website, as Spotify decided apps need 25.000 users before they can become apps. Using these API keys, which are stored on the user's own laptop in localStorage to reduce privacy concerns, they can log in via Spotify and their playlists and songs are immediately loaded via the Spotify API! Everything runs client-side; there's no backend involved at all.
+
+## Credits
+- All those annoying paid sorting apps, for inspiring me to make this :D
+- AI was used to find bugs I couldn't find myself & helping me understand some css. Copilot was used for autocompletion.

@@ -161,7 +161,7 @@ async function getPlaylists() { // pull the user's playlists from the spotify AP
 }
 
 function viewHome() {  // hide everything except for home
-    pausePreview();
+    player.togglePlay();
     document.getElementById("dashboard").classList.add("hidden");
     document.getElementById("setup").classList.add("hidden");
     document.getElementById("home").classList.remove("hidden");
@@ -222,12 +222,7 @@ window.onSpotifyWebPlaybackSDKReady = function() {
     });
     player.connect(); 
 }
-async function pausePreview() {
-    const response = await fetch(`https://api.spotify.com/v1/me/player/pause?device_id=${spotifyDeviceId}`, {
-        method: 'PUT',
-        headers: {'Authorization': 'Bearer ' + authToken}
-    });
-}
+
 async function playPreview(uri) {
     const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${spotifyDeviceId}`, {
         method: 'PUT',
@@ -476,8 +471,9 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowLeft") Trash();
     if (e.key === "ArrowRight") Track();
     if (e.key === "ArrowUp") Love();
-    if (e.key === "Space") {
-        pausePreview();
-        showToast("Song paused.")
+    if (e.key === " ") {
+        e.preventDefault();
+        player.togglePlay();
+        showToast("Song (un)paused.")
     }
 });
