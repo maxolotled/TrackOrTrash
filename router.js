@@ -1,7 +1,7 @@
 const gClientID = "713258863184-m3mbncfbeairrgu4m5kassaeb4ugi67t.apps.googleusercontent.com"
 const redirectUri = window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:5500"
-    : "https://trackortrash.me/index.html";
+    : "https://trackortrash.me";
 
 function switchToYoutube() {
     localStorage.setItem("platform", "youtube")
